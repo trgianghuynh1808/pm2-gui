@@ -1,8 +1,11 @@
 import pm2, { ProcessDescription } from "pm2";
 import fs from "fs";
 import { promisify } from "util";
+
+// *INFO: internal modules
 import { IEcosystemFile } from "../interfaces";
 import { getValidArray } from "../utils";
+import { EProcessStatus } from "../enums";
 
 class _PM2Service {
   private ecosystemData: IEcosystemFile = {} as IEcosystemFile;
@@ -34,10 +37,23 @@ class _PM2Service {
 
     const response = await Promise.all(promises);
 
-    return response.map((item) => {
+    return response.map((item, index) => {
       const [proc] = item ?? {};
 
-      return proc;
+      if (!proc) {
+        return {
+          name: appNames[index],
+          // *INFO: -1 has mean the process not available
+          pm_id: -1,
+          status: EProcessStatus.NOT_START,
+        };
+      }
+
+      return {
+        ...proc,
+        status:
+          proc.pid !== 0 ? EProcessStatus.STARTED : EProcessStatus.STOPPED,
+      };
     });
   }
 }
