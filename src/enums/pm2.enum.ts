@@ -3,3 +3,10 @@ export enum EProcessStatus {
   STARTED = "started",
   STOPPED = "stopped",
 }
+
+export enum EProcessAction {
+  START = "start",
+  RESTART = "restart",
+  DELETE = "delete",
+  STOP = "stop",
+}
