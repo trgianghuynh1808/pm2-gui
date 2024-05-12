@@ -26,12 +26,17 @@ app.post("/process/:appName/:action/:env", async (req, res) => {
   try {
     await PM2Service.excProcessAction(action, appName);
 
-    res.send("Succeed!");
+    res.status(200);
+    res.send({
+      message: "Succeed!",
+    });
   } catch (error) {
     const customError = error as Error;
 
     res.status(500);
-    res.send(customError.message ?? "Failed!");
+    res.send({
+      message: customError.message ?? "Failed!",
+    });
   }
 });
 

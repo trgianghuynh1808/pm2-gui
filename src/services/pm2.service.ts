@@ -122,16 +122,16 @@ class _PM2Service {
 
     switch (action) {
       case EProcessAction.START:
-        this._startProcess(customConfig);
+        await this._startProcess(customConfig);
         break;
       case EProcessAction.STOP:
-        this._stopProcess(customConfig.name);
+        await this._stopProcess(customConfig.name);
         break;
       case EProcessAction.RESTART:
-        this._restartProcess(customConfig.name);
+        await this._restartProcess(customConfig.name);
         break;
       case EProcessAction.DELETE:
-        this._deleteProcess(customConfig.name);
+        await this._deleteProcess(customConfig.name);
         break;
 
       default:
