@@ -1,8 +1,26 @@
+async function fetchProcesses() {
+  const response = await fetch("/processes");
+  const processes = await response.json();
+
+  return processes;
+}
+
+async function excAction(name, action, env) {
+  const response = await fetch(`/processes/${name}/${action}/${env}`, {
+    method: "POST",
+  });
+  const data = await response.json();
+
+  return {
+    status: response.status,
+    data,
+  };
+}
+
 (function ($, window, document) {
   $(async function () {
-    async function fetchProcesses() {
-      const response = await fetch("/processes");
-      const processes = await response.json();
+    async function showProcesses() {
+      const processes = await fetchProcesses();
 
       const trs = getValidArray(processes).map((process) =>
         renderProcess(process),
@@ -11,35 +29,38 @@
       $("#tbl-processes tbody").html(trs.join(""));
     }
 
-    fetchProcesses();
+    function main() {
+      showProcesses();
+      // *INFO: refetch process info every REFETCH_TIME seconds
+      setInterval(() => {
+        showProcesses();
+      }, REFETCH_TIME * 1000);
+    }
 
-    // *INFO: refetch process info every 15 minutes
-    setInterval(() => {
-      fetchProcesses();
-    }, 15 * 1000);
+    main();
 
     $(document).on("click", "button", async function () {
       const self = $(this);
-      const action = self.data("action");
-      const process = self.parents("tr").attr("id");
-      const env = "dev";
+      const btnType = self.data("btn-type");
 
-      console.log(self, action, process);
+      // *INFO: handle onClick action btn
+      if (btnType === BTN_TYPE.ACTION) {
+        const action = self.data("action");
+        const name = self.parents("tr").attr("id");
+        const env = "dev";
 
-      if (action && process) {
-        try {
-          const response = await fetch(`/process/${process}/${action}/${env}`, {
-            method: "POST",
-          });
-          const data = await response.json();
+        if (action && name) {
+          try {
+            const response = await excAction(name, action, env);
 
-          if (response.status !== 200) {
-            throw new Error(data.message);
+            if (response.status !== 200) {
+              throw new Error(response.data.message);
+            }
+
+            showProcesses();
+          } catch (error) {
+            alert(error.message);
           }
-
-          fetchProcesses();
-        } catch (error) {
-          alert(error.message);
         }
       }
     });

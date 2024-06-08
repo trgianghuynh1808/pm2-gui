@@ -10,7 +10,7 @@ function renderStatusBadge(status) {
       badgeClass += " badge-success";
       break;
     case PROCESS_STATUS.NOT_START:
-      badgeClass += " badge-default";
+      badgeClass += " badge-secondary";
       break;
     default:
       break;
@@ -21,7 +21,13 @@ function renderStatusBadge(status) {
 
 function renderActionButton(status) {
   let playBtn = `
-          <button type="button" class="btn btn-outline-primary" data-action="${PROCESS_ACTION.START}" title="start">
+          <button 
+            type="button" 
+            class="btn btn-outline-primary" 
+            data-btn-type="${BTN_TYPE.ACTION}"
+            data-action="${PROCESS_ACTION.START}" 
+            title="start"
+          >
             <i class="bi bi-play-circle"></i>
           </button>
       `;
@@ -31,6 +37,7 @@ function renderActionButton(status) {
       <button
         type="button"
         class="btn btn-outline-danger"
+        data-btn-type="${BTN_TYPE.ACTION}"
         data-action="${PROCESS_ACTION.STOP}"
         title="${PROCESS_ACTION.STOP}"
       >
@@ -39,14 +46,32 @@ function renderActionButton(status) {
   }
 
   const restartBtn = `
-          <button type="button" class="btn btn-outline-success" data-action="${PROCESS_ACTION.RESTART}" title="${PROCESS_ACTION.RESTART}">
+          <button
+            type="button" 
+            class="btn btn-outline-success" 
+            data-btn-type="${BTN_TYPE.ACTION}"
+            data-action="${PROCESS_ACTION.RESTART}" 
+            title="${PROCESS_ACTION.RESTART}"
+          >
             <i class="bi bi-arrow-repeat"></i>
-           </button>
+          </button>
        `;
+
+  const deleteBtn = `
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-btn-type="${BTN_TYPE.ACTION}"
+        data-action="${PROCESS_ACTION.DELETE}"
+        title="${PROCESS_ACTION.DELETE}"
+      >
+        <i class="bi bi-trash3"></i>
+      </button>`;
 
   return `
     ${playBtn}
     ${restartBtn}
+    ${deleteBtn}
   `;
 }
 
@@ -58,6 +83,7 @@ function renderProcess(process) {
 
   return `
     <tr id="${process.name}">
+        <td>${process.pm_id}</td>
         <td>${process.name}</td>
         <td>${renderStatusBadge(process.status)}</td>
         <td>

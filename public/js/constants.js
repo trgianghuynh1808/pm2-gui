@@ -3,12 +3,17 @@ const PROCESS_ACTION = {
   RESTART: "restart",
   DELETE: "delete",
   STOP: "stop",
+  SETTING: "setting",
 };
 
 const PROCESS_STATUS = {
   NOT_START: "not_start",
   STARTED: "started",
   STOPPED: "stopped",
+};
+
+const BTN_TYPE = {
+  ACTION: "action",
 };
 
 const DEFAULT_NONE_VALUE = "N/A";
