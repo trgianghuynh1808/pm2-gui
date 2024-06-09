@@ -29,6 +29,26 @@ async function excAction(name, action, env) {
       $("#tbl-processes tbody").html(trs.join(""));
     }
 
+    async function handleOnClickActionBtn(self) {
+      const action = self.data("action");
+      const name = self.parents("tr").attr("id");
+      const env = "dev";
+
+      if (action && name) {
+        try {
+          const response = await excAction(name, action, env);
+
+          if (response.status !== 200) {
+            throw new Error(response.data.message);
+          }
+
+          showProcesses();
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+    }
+
     function main() {
       showProcesses();
       // *INFO: refetch process info every REFETCH_TIME seconds
@@ -45,23 +65,15 @@ async function excAction(name, action, env) {
 
       // *INFO: handle onClick action btn
       if (btnType === BTN_TYPE.ACTION) {
-        const action = self.data("action");
-        const name = self.parents("tr").attr("id");
-        const env = "dev";
+        await handleOnClickActionBtn(self);
+        return;
+      }
 
-        if (action && name) {
-          try {
-            const response = await excAction(name, action, env);
-
-            if (response.status !== 200) {
-              throw new Error(response.data.message);
-            }
-
-            showProcesses();
-          } catch (error) {
-            alert(error.message);
-          }
-        }
+      if (btnType === BTN_TYPE.SAVE_SETTING) {
+        await onSaveEditor(() => {
+          showProcesses();
+        });
+        return;
       }
     });
   });

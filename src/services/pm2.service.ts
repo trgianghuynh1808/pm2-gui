@@ -70,6 +70,12 @@ class _PM2Service {
     await deleteAsync(appName);
   }
 
+  private async _reloadProcess(appName: string): Promise<void> {
+    const reloadAsync = promisify(pm2.reload.bind(pm2));
+
+    await reloadAsync(appName);
+  }
+
   // *INFO: public methods
   public async getProcesses(): Promise<ProcessDescription[]> {
     const appNames = this._getAppNames();
@@ -137,6 +143,16 @@ class _PM2Service {
       default:
         throw new Error("Action not found");
     }
+  }
+
+  public async reloadAll(): Promise<void> {
+    const appNames = this._getAppNames();
+
+    const promises = appNames.map((name) => {
+      return this._reloadProcess(name);
+    });
+
+    await Promise.all(promises);
   }
 }
 

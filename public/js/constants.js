@@ -14,6 +14,7 @@ const PROCESS_STATUS = {
 
 const BTN_TYPE = {
   ACTION: "action",
+  SAVE_SETTING: "save_setting",
 };
 
 const DEFAULT_NONE_VALUE = "N/A";

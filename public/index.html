@@ -92,17 +92,31 @@
               <!-- Editor content -->
               <div id="editor"></div>
             </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" class="btn btn-primary">
-                Save changes
-              </button>
+            <div class="modal-footer d-flex justify-content-between">
+              <div>
+                <a
+                  href="https://pm2.keymetrics.io/docs/usage/application-declaration/"
+                  target="_blank"
+                  >PM2 config Documentation</a
+                >
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-btn-type="save_setting"
+                >
+                  Save changes
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -120,7 +134,7 @@
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/render-dom.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/editor.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
