@@ -2,6 +2,7 @@
   $(async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const appName = urlParams.get("pm_name");
+    const socket = io();
 
     async function showProcessDetails() {
       const details = await fetchProcessDetails(appName);
@@ -34,9 +35,29 @@
       }
     }
 
+    function showStdLog(process) {
+      const $console = $("#console");
+      $console.empty();
+      socket.removeAllListeners();
+
+      socket.on(`${process}:out_log`, (procLog) => {
+        $console.append(
+          `<p id="console-text" class="line1">${procLog.data}</p>`,
+        );
+
+        function scrollToBottom() {
+          var $console = $("#console-background");
+          $console.animate({ scrollTop: $console.prop("scrollHeight") }, 500);
+        }
+
+        scrollToBottom();
+      });
+    }
+
     function main() {
       renderHeadTitle();
       showProcessDetails();
+      showStdLog(appName);
 
       // *INFO: refetch process info every REFETCH_TIME seconds
       setInterval(() => {

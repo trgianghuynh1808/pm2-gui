@@ -2,13 +2,27 @@ import pm2, { ProcessDescription } from "pm2";
 import fs from "fs";
 import { promisify } from "util";
 import path from "path";
+import { EventEmitter } from "events";
 
 // *INFO: internal modules
 import { IEcosystemFile, TAppConfig } from "../interfaces";
 import { getValidArray } from "../utils";
 import { EProcessAction, EProcessStatus } from "../enums";
 
+export interface IProcessOutLog {
+  data: string;
+  at: number;
+  process: {
+    namespace: string;
+    rev: string;
+    name: string;
+    pm_id: number;
+  };
+}
+
 class _PM2Service {
+  private bus: EventEmitter | undefined;
+
   constructor() {}
 
   // *INFO: private methods
@@ -174,6 +188,15 @@ class _PM2Service {
     });
 
     await Promise.all(promises);
+  }
+
+  async onLogOut(onLog: (logObj: IProcessOutLog) => void): Promise<void> {
+    if (!this.bus) {
+      this.bus = await promisify<EventEmitter>(pm2.launchBus).call(pm2);
+    }
+    this.bus.on("log:out", (procLog: IProcessOutLog) => {
+      onLog(procLog);
+    });
   }
 }
 

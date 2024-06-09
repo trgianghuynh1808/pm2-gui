@@ -2,6 +2,7 @@ require("dotenv").config();
 import express from "express";
 
 import { PM2ConfigRouter, ProcessRouter } from "./routers";
+import socketIO from "./socketIO";
 
 const app = express();
 
@@ -23,6 +24,8 @@ app.use("/pm2-config", PM2ConfigRouter);
 
 const PORT = process.env.PORT || 4001;
 
-app.listen(PORT, () => {
+const httpServer = app.listen(PORT, () => {
   console.log(`[Server] Running on : http://localhost:${PORT}`);
 });
+
+socketIO.init(httpServer);

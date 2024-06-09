@@ -18,8 +18,8 @@
     />
 
     <script
-      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
       crossorigin="anonymous"
     ></script>
 
@@ -28,6 +28,7 @@
       integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
       crossorigin="anonymous"
     ></script>
+    <script src="/socket.io/socket.io.js"></script>
 
     <link rel="stylesheet" href="./style.css" />
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
@@ -43,6 +44,16 @@
             <h4 id="title"></h4>
             <div id="process-details"></div>
             <div id="action-group" class="d-flex"></div>
+          </div>
+
+          <br />
+          <div class="fake-menu">
+            <div class="fake-buttons fake-close"></div>
+            <div class="fake-buttons fake-minimize"></div>
+            <div class="fake-buttons fake-zoom"></div>
+          </div>
+          <div id="console-background">
+            <div id="console"></div>
           </div>
         </div>
       </div>
