@@ -12,6 +12,13 @@ router.get("/", async (_req, res) => {
   res.json(list);
 });
 
+router.get("/:appName", async (req, res) => {
+  const appName = req.params.appName;
+  const details = await PM2Service.getProcessDetails(appName);
+
+  res.json(details);
+});
+
 router.post("/:appName/:action/:env", async (req, res) => {
   const appName = req.params.appName;
   // const env = req.params.env;

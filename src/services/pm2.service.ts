@@ -107,6 +107,27 @@ class _PM2Service {
     });
   }
 
+  public async getProcessDetails(appName: string): Promise<ProcessDescription> {
+    const describeAsync = promisify(pm2.describe.bind(pm2));
+
+    const res = await describeAsync(appName);
+    const [proc] = res ?? {};
+
+    if (!proc) {
+      return {
+        name: appName,
+        // *INFO: -1 has mean the process not available
+        pm_id: -1,
+        status: EProcessStatus.NOT_START,
+      } as ProcessDescription;
+    }
+
+    return {
+      ...proc,
+      status: proc.pid !== 0 ? EProcessStatus.STARTED : EProcessStatus.STOPPED,
+    } as ProcessDescription;
+  }
+
   public async excProcessAction(
     action: EProcessAction,
     appName: string,

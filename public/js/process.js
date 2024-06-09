@@ -1,29 +1,33 @@
 (function ($, window, document) {
   $(async function () {
-    async function showProcesses() {
-      const processes = await fetchProcesses();
+    const urlParams = new URLSearchParams(window.location.search);
+    const appName = urlParams.get("pm_name");
 
-      const trs = getValidArray(processes).map((process) =>
-        renderProcess(process),
-      );
+    async function showProcessDetails() {
+      const details = await fetchProcessDetails(appName);
 
-      $("#tbl-processes tbody").html(trs.join(""));
+      $("#title").text(appName);
+      $("#process-details").html(renderProcessDetails(details));
+      $("#action-group").html(renderActionButton(details.status));
+    }
+
+    function renderHeadTitle() {
+      document.title = `${appName} - PM2 GUI`;
     }
 
     async function handleOnClickActionBtn(self) {
       const action = self.data("action");
-      const name = self.parents("tr").attr("id");
       const env = "dev";
 
-      if (action && name) {
+      if (action && appName) {
         try {
-          const response = await excAction(name, action, env);
+          const response = await excAction(appName, action, env);
 
           if (response.status !== 200) {
             throw new Error(response.data.message);
           }
 
-          showProcesses();
+          showProcessDetails();
         } catch (error) {
           alert(error.message);
         }
@@ -31,10 +35,12 @@
     }
 
     function main() {
-      showProcesses();
+      renderHeadTitle();
+      showProcessDetails();
+
       // *INFO: refetch process info every REFETCH_TIME seconds
       setInterval(() => {
-        showProcesses();
+        showProcessDetails();
       }, REFETCH_TIME * 1000);
     }
 
@@ -47,13 +53,6 @@
       // *INFO: handle onClick action btn
       if (btnType === BTN_TYPE.ACTION) {
         await handleOnClickActionBtn(self);
-        return;
-      }
-
-      if (btnType === BTN_TYPE.SAVE_SETTING) {
-        await onSaveEditor(() => {
-          showProcesses();
-        });
         return;
       }
     });

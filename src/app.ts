@@ -13,11 +13,16 @@ app.get("/", (_req, res) => {
   res.redirect("/index.html");
 });
 
+app.get("/process", (req, res) => {
+  const query = req.query;
+  res.redirect(`/process.html?pm_id=${query.pm_id}&pm_name=${query.pm_name}`);
+});
+
 app.use("/processes", ProcessRouter);
 app.use("/pm2-config", PM2ConfigRouter);
 
 const PORT = process.env.PORT || 4001;
 
 app.listen(PORT, () => {
-  console.log(`[Server] Listening on :${PORT}`);
+  console.log(`[Server] Running on : http://localhost:${PORT}`);
 });

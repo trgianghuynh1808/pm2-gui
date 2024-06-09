@@ -18,3 +18,13 @@
   position: fixed;
   z-index: 100000;
 }
+
+#action-group {
+  gap: 10px;
+}
+
+#process-details {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}

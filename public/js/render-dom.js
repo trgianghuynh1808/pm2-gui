@@ -84,7 +84,9 @@ function renderProcess(process) {
   return `
     <tr id="${process.name}">
         <td>${process.pm_id}</td>
-        <td>${process.name}</td>
+        <td>
+          <a href="/process?pm_id=${process.pm_id}&pm_name=${process.name}" target="_blank">${process.name}</a>
+        </td>
         <td>${renderStatusBadge(process.status)}</td>
         <td>
           <div class="btn-group">
@@ -101,4 +103,18 @@ function renderProcess(process) {
         </td>
     </tr>
 `;
+}
+
+function renderProcessDetails(process) {
+  const cpuText = process.monit ? process.monit.cpu : DEFAULT_NONE_VALUE;
+  const memoryText = process.monit
+    ? (process.monit.memory / (1024 * 1024)).toFixed(1) + " MB"
+    : DEFAULT_NONE_VALUE;
+
+  return `
+    <span id="cpu-info">CPU: ${cpuText}</span>
+    <span> - </span>
+    <span id="ram-info">RAM: ${memoryText}</span>
+    ${renderStatusBadge(process.status)}
+  `;
 }
