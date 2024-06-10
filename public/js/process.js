@@ -40,9 +40,15 @@
       $console.empty();
       socket.removeAllListeners();
 
+      function removeColorCodes(str) {
+        return str.replace(/\x1b\[[0-9;]*m/g, "");
+      }
+
       socket.on(`${process}:out_log`, (procLog) => {
         $console.append(
-          `<p id="console-text" class="line1">${procLog.data}</p>`,
+          `<p id="console-text" class="line1">${removeColorCodes(
+            procLog.data
+          )}</p>`
         );
 
         function scrollToBottom() {
