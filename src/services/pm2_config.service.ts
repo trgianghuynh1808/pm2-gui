@@ -17,6 +17,7 @@ class _PM2ConfigService {
   }
 
   private _reloadConfig(): void {
+    const execPath = process.cwd();
     const configPath = this._getConfigPath();
     const folderPath = configPath
       .split("/")
@@ -28,6 +29,8 @@ class _PM2ConfigService {
     shelljs.cd("~");
     shelljs.cd(folderPath);
     shelljs.exec(`pm2 reload ${configFileName}`);
+    shelljs.cd("~");
+    shelljs.cd(execPath);
   }
 
   // *INFO: public methods
@@ -45,7 +48,7 @@ class _PM2ConfigService {
       fs.writeFileSync(
         configPath,
         JSON.stringify(JSON.parse(content), null, 2),
-        "utf8",
+        "utf8"
       );
 
       this._reloadConfig();
