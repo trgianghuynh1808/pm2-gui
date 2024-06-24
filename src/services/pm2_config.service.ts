@@ -28,7 +28,8 @@ class _PM2ConfigService {
 
     shelljs.cd("~");
     shelljs.cd(folderPath);
-    shelljs.exec(`pm2 reload ${configFileName}`);
+    shelljs.exec(`pm2 kill`);
+    shelljs.exec(`pm2 start ${configFileName}`);
     shelljs.cd("~");
     shelljs.cd(execPath);
   }
@@ -48,7 +49,7 @@ class _PM2ConfigService {
       fs.writeFileSync(
         configPath,
         JSON.stringify(JSON.parse(content), null, 2),
-        "utf8"
+        "utf8",
       );
 
       this._reloadConfig();
