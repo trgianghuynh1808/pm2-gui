@@ -38,8 +38,8 @@ pm2 set pm2-logrotate:max_size 8M
 // limit log files
 pm2 set pm2-logrotate:retain 20
 
-// rotate job when 13:00 every day
-pm2 set pm2-logrotate:rotateInterval 0 0 13 * *
+// rotate job when every hour
+pm2 set pm2-logrotate:rotateInterval '0 0 */1 * * *'
 ```
 
 - More details about config: [pm2-logrotate](https://www.npmjs.com/package/pm2-logrotate)
