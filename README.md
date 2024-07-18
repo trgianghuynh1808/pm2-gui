@@ -39,7 +39,7 @@ pm2 set pm2-logrotate:max_size 8M
 pm2 set pm2-logrotate:retain 20
 
 // rotate job when every hour
-pm2 set pm2-logrotate:rotateInterval '0 0 */1 * * *'
+pm2 set pm2-logrotate:rotateInterval '0 */1 * * *'
 ```
 
 - More details about config: [pm2-logrotate](https://www.npmjs.com/package/pm2-logrotate)
