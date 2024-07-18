@@ -24,6 +24,26 @@
   npm run dev
   ```
   
+## Config PM2 log-rotate
+Flush logs file with rotate by node-schedule
+- Install module
+```
+pm2 install pm2-logrotate
+```
+- Set config
+```
+// set force rotate when over 8MB limit
+pm2 set pm2-logrotate:max_size 8M
+
+// limit log files
+pm2 set pm2-logrotate:retain 20
+
+// rotate job when 13:00 every day
+pm2 set pm2-logrotate:rotateInterval 0 0 13 * *
+```
+
+- More details about config: [pm2-logrotate](https://www.npmjs.com/package/pm2-logrotate)
+  
 ## Features
 * Manage Process info
 * Start/Restart/Stop/Remove Process
