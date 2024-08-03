@@ -14,8 +14,8 @@ editor.session.setTabSize(2);
 // disabe toggle comment with JSON file
 editor.commands.removeCommand("togglecomment");
 
-$("#envModal").on("show.bs.modal", async function (event) {
-  const rawContent = await fetchPM2Config();
+$("#envModal").on("show.bs.modal", async function () {
+  const rawContent = await fetchPM2ConfigAPI();
 
   editor.setValue(rawContent, -1);
 });
@@ -23,7 +23,7 @@ $("#envModal").on("show.bs.modal", async function (event) {
 async function onSaveEditor(callback) {
   const currentValue = editor.getValue();
 
-  const res = await fetchUpdatePM2Config({
+  const res = await updatePM2ConfigAPI({
     content: currentValue,
   });
 

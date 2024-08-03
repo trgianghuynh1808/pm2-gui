@@ -5,7 +5,7 @@
     const socket = io();
 
     async function showProcessDetails() {
-      const details = await fetchProcessDetails(appName);
+      const details = await fetchProcessDetailsAPI(appName);
 
       $("#title").text(appName);
       $("#process-details").html(renderProcessDetails(details));
@@ -22,7 +22,7 @@
 
       if (action && appName) {
         try {
-          const response = await excAction(appName, action, env);
+          const response = await excActionAPI(appName, action, env);
 
           if (response.status !== 200) {
             throw new Error(response.data.message);
@@ -47,8 +47,8 @@
       socket.on(`${process}:out_log`, (procLog) => {
         $console.append(
           `<p id="console-text" class="line1">${removeColorCodes(
-            procLog.data
-          )}</p>`
+            procLog.data,
+          )}</p>`,
         );
 
         function scrollToBottom() {

@@ -1,7 +1,7 @@
 (function ($, window, document) {
   $(async function () {
     async function showProcesses() {
-      const processes = await fetchProcesses();
+      const processes = await fetchProcessesAPI();
 
       const trs = getValidArray(processes).map((process) =>
         renderProcess(process),
@@ -17,7 +17,7 @@
 
       if (action && name) {
         try {
-          const response = await excAction(name, action, env);
+          const response = await excActionAPI(name, action, env);
 
           if (response.status !== 200) {
             throw new Error(response.data.message);

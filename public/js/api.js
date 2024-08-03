@@ -1,18 +1,18 @@
-async function fetchProcesses() {
+async function fetchProcessesAPI() {
   const response = await fetch("/processes");
   const processes = await response.json();
 
   return processes;
 }
 
-async function fetchProcessDetails(appName) {
+async function fetchProcessDetailsAPI(appName) {
   const response = await fetch(`/processes/${appName}`);
   const details = await response.json();
 
   return details;
 }
 
-async function excAction(name, action, env) {
+async function excActionAPI(name, action, env) {
   const response = await fetch(`/processes/${name}/${action}/${env}`, {
     method: "POST",
   });
@@ -24,14 +24,14 @@ async function excAction(name, action, env) {
   };
 }
 
-async function fetchPM2Config() {
+async function fetchPM2ConfigAPI() {
   const response = await fetch("/pm2-config");
   const rawContent = await response.json();
 
   return rawContent;
 }
 
-async function fetchUpdatePM2Config(payload) {
+async function updatePM2ConfigAPI(payload) {
   const response = await fetch("/pm2-config", {
     method: "PUT",
     headers: {
