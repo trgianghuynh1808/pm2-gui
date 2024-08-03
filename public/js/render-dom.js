@@ -68,10 +68,23 @@ function renderActionButton(status) {
         <i class="bi bi-trash3"></i>
       </button>`;
 
+  const configBtn = `
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        data-btn-type="${BTN_TYPE.ACTION}"
+        data-action="${PROCESS_ACTION.SETTING}"
+        data-target="#processConfigModal"
+        title="${PROCESS_ACTION.SETTING}"
+      >
+        <i class="bi bi-gear"></i>
+      </button>`;
+
   return `
     ${playBtn}
     ${restartBtn}
     ${deleteBtn}
+    ${configBtn}
   `;
 }
 

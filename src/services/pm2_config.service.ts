@@ -1,6 +1,8 @@
 import path from "path";
 import fs from "fs";
 import shelljs from "shelljs";
+import { getValidArray } from "../utils";
+import { TAppConfig } from "../interfaces";
 
 // *INFO: internal modules
 
@@ -16,7 +18,7 @@ class _PM2ConfigService {
     return configPath;
   }
 
-  private _reloadConfig(): void {
+  private _reloadConfig(appName?: string): void {
     const execPath = process.cwd();
     const configPath = this._getConfigPath();
     const folderPath = configPath
@@ -30,7 +32,12 @@ class _PM2ConfigService {
     shelljs.cd(folderPath);
     // *INFO: clear all logs file
     shelljs.exec(`pm2 flush`);
-    shelljs.exec(`pm2 restart ${configFileName}`);
+
+    if (appName) {
+      shelljs.exec(`pm2 reload ${configFileName} --only ${appName}`);
+    } else {
+      shelljs.exec(`pm2 restart ${configFileName}`);
+    }
     shelljs.cd("~");
     shelljs.cd(execPath);
   }
@@ -41,6 +48,25 @@ class _PM2ConfigService {
     const rawContent = fs.readFileSync(configPath).toString();
 
     return rawContent;
+  }
+
+  public loadProcessContent(appName: string): string {
+    const configPath = this._getConfigPath();
+    const rawContent = fs.readFileSync(configPath).toString();
+
+    const configData = JSON.parse(rawContent);
+    const appConfigs = getValidArray(configData.apps) as TAppConfig[];
+    const processConfig = appConfigs.find(
+      (item: TAppConfig) => item.name === appName,
+    );
+
+    if (!processConfig) {
+      throw new Error("Process not found");
+    }
+
+    const processConfigContent = JSON.stringify(processConfig, null, 2);
+
+    return processConfigContent;
   }
 
   public async writeContent(content: string): Promise<boolean> {
@@ -54,6 +80,38 @@ class _PM2ConfigService {
       );
 
       this._reloadConfig();
+
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  public async writeProcessContent(
+    appName: string,
+    content: string,
+  ): Promise<boolean> {
+    try {
+      const configPath = this._getConfigPath();
+      const rawContent = fs.readFileSync(configPath).toString();
+
+      let configData = JSON.parse(rawContent);
+      let appConfigs = getValidArray(configData.apps) as TAppConfig[];
+      const processConfigIndex = appConfigs.findIndex(
+        (item: TAppConfig) => item.name === appName,
+      );
+
+      if (processConfigIndex < 0) {
+        throw new Error("Process not found");
+      }
+
+      appConfigs[processConfigIndex] = JSON.parse(content);
+      configData.apps = appConfigs;
+
+      fs.writeFileSync(configPath, JSON.stringify(configData, null, 2), "utf8");
+
+      this._reloadConfig(appName);
 
       return true;
     } catch (error) {

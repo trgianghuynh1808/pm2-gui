@@ -10,12 +10,22 @@
       $("#tbl-processes tbody").html(trs.join(""));
     }
 
+    function handleOnClickProcessSettingBtn(appName) {
+      window.sessionStorage.setItem(FOCUSED_PROCESS_STORAGE_KEY, appName);
+      $(`#${PROCESS_CONFIG_MODAL_ID}`).modal("show", { appName });
+    }
+
     async function handleOnClickActionBtn(self) {
       const action = self.data("action");
       const name = self.parents("tr").attr("id");
       const env = "dev";
 
       if (action && name) {
+        if (action === PROCESS_ACTION.SETTING) {
+          handleOnClickProcessSettingBtn(name);
+          return;
+        }
+
         try {
           const response = await excActionAPI(name, action, env);
 
@@ -44,17 +54,25 @@
       const self = $(this);
       const btnType = self.data("btn-type");
 
-      // *INFO: handle onClick action btn
-      if (btnType === BTN_TYPE.ACTION) {
-        await handleOnClickActionBtn(self);
-        return;
-      }
-
-      if (btnType === BTN_TYPE.SAVE_SETTING) {
-        await onSaveEditor(() => {
-          showProcesses();
-        });
-        return;
+      switch (btnType) {
+        case BTN_TYPE.ACTION: {
+          await handleOnClickActionBtn(self);
+          return;
+        }
+        case BTN_TYPE.SAVE_SETTING: {
+          await onSaveEditor(() => {
+            showProcesses();
+          });
+          return;
+        }
+        case BTN_TYPE.SAVE_PROCESS_SETTING: {
+          await onSaveProcessEditor(() => {
+            showProcesses();
+          });
+          return;
+        }
+        default:
+          break;
       }
     });
   });

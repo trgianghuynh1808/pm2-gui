@@ -1,4 +1,5 @@
-#editor {
+#editor,
+#process-config-editor {
   position: absolute;
   top: 0;
   right: 0;
@@ -6,7 +7,8 @@
   left: 0;
 }
 
-.editor-modal.modal-dialog {
+.editor-modal.modal-dialog,
+.process-editor-modal.modal-dialog {
   max-width: 100%;
   margin: 0;
   top: 0;

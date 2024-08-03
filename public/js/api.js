@@ -31,8 +31,29 @@ async function fetchPM2ConfigAPI() {
   return rawContent;
 }
 
+async function fetchPM2ProcessConfigAPI(appName) {
+  const response = await fetch(`/pm2-config/process/${appName}`);
+  const rawContent = await response.json();
+
+  return rawContent;
+}
+
 async function updatePM2ConfigAPI(payload) {
   const response = await fetch("/pm2-config", {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const result = await response.json();
+
+  return result;
+}
+
+async function updatePM2ProcessConfigAPI(appName, payload) {
+  const response = await fetch(`/pm2-config/process/${appName}`, {
     method: "PUT",
     headers: {
       Accept: "application/json",
