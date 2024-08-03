@@ -28,8 +28,9 @@ class _PM2ConfigService {
 
     shelljs.cd("~");
     shelljs.cd(folderPath);
-    shelljs.exec(`pm2 kill`);
-    shelljs.exec(`pm2 start ${configFileName}`);
+    // *INFO: clear all logs file
+    shelljs.exec(`pm2 flush`);
+    shelljs.exec(`pm2 restart ${configFileName}`);
     shelljs.cd("~");
     shelljs.cd(execPath);
   }
