@@ -1,1 +1,1 @@
-const REFETCH_TIME = 15; // (s)
+const REFETCH_TIME = 10; // (s)

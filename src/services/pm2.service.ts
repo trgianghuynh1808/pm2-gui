@@ -8,6 +8,7 @@ import { EventEmitter } from "events";
 import { IEcosystemFile, TAppConfig } from "../interfaces";
 import { getValidArray } from "../utils";
 import { EProcessAction, EProcessStatus } from "../enums";
+import PM2ConfigService from "./pm2_config.service";
 
 export interface IProcessOutLog {
   data: string;
@@ -61,9 +62,13 @@ class _PM2Service {
   }
 
   private async _startProcess(config: object, env?: string): Promise<void> {
-    const startAsync = promisify(pm2.start.bind(pm2));
+    try {
+      const startAsync = promisify(pm2.start.bind(pm2));
 
-    await startAsync(config as any);
+      await startAsync(config as any);
+    } catch (error) {
+      PM2ConfigService.startProcessByCmd((config as any).name);
+    }
   }
 
   private async _stopProcess(appName: string): Promise<void> {

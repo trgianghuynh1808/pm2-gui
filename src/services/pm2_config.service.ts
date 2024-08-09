@@ -6,6 +6,8 @@ import { TAppConfig } from "../interfaces";
 
 // *INFO: internal modules
 
+type TExecCMDHandler = (configFileName: string) => void;
+
 class _PM2ConfigService {
   constructor() {}
 
@@ -18,7 +20,7 @@ class _PM2ConfigService {
     return configPath;
   }
 
-  private _reloadConfig(appName?: string): void {
+  private _execCMD(handler: TExecCMDHandler): void {
     const execPath = process.cwd();
     const configPath = this._getConfigPath();
     const folderPath = configPath
@@ -26,23 +28,40 @@ class _PM2ConfigService {
       .slice(0, configPath.split("/").length - 1)
       .join("/");
 
-    const configFileName = configPath.split("/").slice(-1);
+    const configFileName = configPath.split("/").slice(-1)[0];
 
     shelljs.cd("~");
     shelljs.cd(folderPath);
-    // *INFO: clear all logs file
-    shelljs.exec(`pm2 flush`);
 
-    if (appName) {
-      shelljs.exec(`pm2 reload ${configFileName} --only ${appName}`);
-    } else {
-      shelljs.exec(`pm2 restart ${configFileName}`);
-    }
+    handler(configFileName);
+
     shelljs.cd("~");
     shelljs.cd(execPath);
   }
 
+  private _reloadConfig(appName?: string): void {
+    this._execCMD((configFileName) => {
+      // *INFO: clear all logs file
+      shelljs.exec(`pm2 flush`);
+
+      if (appName) {
+        shelljs.exec(`pm2 reload ${configFileName} --only ${appName}`);
+        return;
+      }
+
+      shelljs.exec(`pm2 restart ${configFileName}`);
+    });
+  }
+
   // *INFO: public methods
+  public startProcessByCmd(appName: string) {
+    this._execCMD((configFileName) => {
+      // *INFO: clear log file
+      shelljs.exec(`pm2 flush ${appName}`);
+      shelljs.exec(`pm2 start ${configFileName} --only ${appName}`);
+    });
+  }
+
   public loadContent(): string {
     const configPath = this._getConfigPath();
     const rawContent = fs.readFileSync(configPath).toString();
