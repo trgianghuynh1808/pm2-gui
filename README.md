@@ -1,7 +1,7 @@
 # PM2 GUI
 
 ## Demo
-[![Watch the video](https://img.youtube.com/vi/9zUQqnCJV_A/hqdefault.jpg)](https://www.youtube.com/watch?v=9zUQqnCJV_A)
+[![Watch the video](https://img.youtube.com/vi/mQ3gARFE5_0/hqdefault.jpg)](https://www.youtube.com/watch?v=mQ3gARFE5_0)
 
 ## How to usage
 - Clone repo:
