@@ -13,8 +13,8 @@
   npm install pm2@latest -g
   ```
 - Create `ecosystem.json` file in folder we need to run.
-- Create `.env` file based on `.env.example`.
 - CD `pm2-gui` repo
+- Create `.env` file based on `.env.example`.
 - Install packages
   ```
   npm install
