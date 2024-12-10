@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only ./src/app.ts"
+    "exec-custom-shell": "./shell_scripts/custom.sh",
+    "run:dev": "ts-node-dev --respawn --transpile-only ./src/app.ts",
+    "dev": "yarn exec-custom-shell && yarn run:dev",
+    "setup": "chmod +x ./shell_scripts/*.sh"
   },
   "keywords": [],
   "author": "",
