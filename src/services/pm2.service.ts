@@ -1,13 +1,14 @@
-import pm2, { ProcessDescription } from "pm2";
-import fs from "fs";
-import { promisify } from "util";
-import path from "path";
 import { EventEmitter } from "events";
+import fs from "fs";
+import path from "path";
+import pm2, { ProcessDescription } from "pm2";
+import { promisify } from "util";
 
 // *INFO: internal modules
-import { IEcosystemFile, TAppConfig } from "../interfaces";
-import { getValidArray } from "../utils";
 import { EProcessAction, EProcessStatus } from "../enums";
+import { IEcosystemFile, IProcessDetails, TAppConfig } from "../interfaces";
+import { getValidArray } from "../utils";
+import { GitService } from "./git.service";
 import PM2ConfigService from "./pm2_config.service";
 
 export interface IProcessOutLog {
@@ -96,8 +97,10 @@ class _PM2Service {
   }
 
   // *INFO: public methods
-  public async getProcesses(): Promise<ProcessDescription[]> {
-    const appNames = this._getAppNames();
+  public async getProcesses(): Promise<IProcessDetails[]> {
+    const apps = this._readEcosystemFile().apps;
+    const appNames = getValidArray(apps).map((app) => app.name);
+
     const describeAsync = promisify(pm2.describe.bind(pm2));
 
     const promises = appNames.map((name) => {
@@ -108,13 +111,23 @@ class _PM2Service {
 
     return getValidArray(response).map((item, index) => {
       const [proc] = item ?? {};
+      const appName = appNames[index];
+      const appConfig = apps.find((app) => app.name === appName);
+      const cwd = appConfig?.cwd;
+      let gitBranchName: string | undefined;
+
+      if (cwd) {
+        const scriptPath = this._getScriptPath(cwd);
+        gitBranchName = GitService.getBranchFromGitHead(scriptPath);
+      }
 
       if (!proc) {
         return {
-          name: appNames[index],
+          name: appName,
           // *INFO: -1 has mean the process not available
           pm_id: -1,
           status: EProcessStatus.NOT_START,
+          git_branch_name: gitBranchName,
         };
       }
 
@@ -122,11 +135,14 @@ class _PM2Service {
         ...proc,
         status:
           proc.pid !== 0 ? EProcessStatus.STARTED : EProcessStatus.STOPPED,
+        git_branch_name: gitBranchName,
       };
     });
   }
 
   public async getProcessDetails(appName: string): Promise<ProcessDescription> {
+    const appConfig = this._getAppConfig(appName);
+
     const describeAsync = promisify(pm2.describe.bind(pm2));
 
     const res = await describeAsync(appName);

@@ -101,6 +101,7 @@ function renderProcess(process) {
           <a href="/process?pm_id=${process.pm_id}&pm_name=${process.name}" target="_blank">${process.name}</a>
         </td>
         <td>${renderStatusBadge(process.status)}</td>
+        <td>${process.git_branch_name}</td>
         <td>
           <div class="btn-group">
             <button type="button" class="btn btn-default btn-sm">
